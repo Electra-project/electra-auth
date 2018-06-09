@@ -91,6 +91,10 @@
 			"Rev": "f3cacc17c85ecb7f1b6a9e373ee85d1480919868"
 		},
 		{
+			"ImportPath": "golang.org/x/crypto/pbkdf2",
+			"Rev": "8ac0e0d97ce45cd83d1d7243c060cb8461dda5e9"
+		},
+		{
 			"ImportPath": "golang.org/x/sys/unix",
 			"Rev": "2c42eef0765b9837fbdab12011af7830f55f88f0"
 		},
