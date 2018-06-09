@@ -6,12 +6,12 @@ import "github.com/gin-gonic/gin"
 func Router() *gin.Engine {
 	router := gin.Default()
 
-	v1 := router.Group("v1.0")
+	v1 := router.Group("v1")
 	{
 		v1.GET("/", func(c *gin.Context) {
 			c.JSON(200, gin.H{
 				"name":    "Electra Auth API",
-				"version": "1.0",
+				"version": "1",
 			})
 		})
 	}
