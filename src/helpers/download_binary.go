@@ -6,11 +6,52 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"path"
 	"runtime"
+	"strconv"
+	"time"
 )
+
+func printDownloadPercent(done chan int64, path string, total int64) {
+	var stop = false
+
+	for {
+		select {
+		case <-done:
+			stop = true
+		default:
+
+			file, err := os.Open(path)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			fi, err := file.Stat()
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			size := fi.Size()
+
+			if size == 0 {
+				size = 1
+			}
+
+			var percent = float64(size) / float64(total) * 100
+
+			Log(strconv.FormatFloat(percent, 'f', 2, 64) + "%")
+		}
+
+		if stop {
+			break
+		}
+
+		time.Sleep(time.Second)
+	}
+}
 
 func download(url string, dest string, size int64) {
 	file := path.Base(url)
@@ -38,6 +79,8 @@ func download(url string, dest string, size int64) {
 	defer headResp.Body.Close()
 
 	done := make(chan int64)
+
+	go printDownloadPercent(done, path.String(), size)
 
 	resp, err := http.Get(url)
 
