@@ -65,7 +65,7 @@ func waitForDaemonToBeReady() {
 
 	sum := 1
 	for sum < 1000 {
-		daemonURI := "http://127.0.0.1:5788"
+		daemonURI := "http://localhost:5788"
 
 		data := bytes.NewBuffer([]byte(`{"jsonrpc":"2.0","method":"getinfo"}`))
 		req, err := http.NewRequest("POST", daemonURI, data)
