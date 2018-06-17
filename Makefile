@@ -6,12 +6,8 @@ else
 	BINARY_NAME = ${NAME}
 endif
 
-download-binary:
-	go run ./tasks/download_binary.go
-
 install:
 	godep restore
-	make download-binary
 
 start:
 	go build && "./${BINARY_NAME}"
