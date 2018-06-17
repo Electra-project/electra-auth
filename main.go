@@ -22,7 +22,7 @@ func main() {
 	}
 
 	startDaemon()
-	waitForDaemonToBeReady()
+	go waitForDaemonToBeReady()
 
 	helpers.LogInfo("Starting server...")
 	server.Start()
@@ -61,7 +61,7 @@ func runDaemon(c *exec.Cmd) {
 }
 
 func waitForDaemonToBeReady() {
-	helpers.LogInfo("Waiting for Electra daemon to be ready...")
+	helpers.LogInfo("Waiting for Electra daemon to be ready...\n")
 
 	sum := 1
 	for sum < 1000 {
