@@ -6,6 +6,11 @@ import (
 	"github.com/ttacon/chalk"
 )
 
+// Log logs in green.
+func Log(s string) {
+	fmt.Println(chalk.Green.Color(s))
+}
+
 // LogErr logs in red.
 func LogErr(s string) {
 	fmt.Println(chalk.Red.Color(s))
