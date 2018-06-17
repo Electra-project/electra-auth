@@ -85,6 +85,6 @@ func waitForDaemonToBeReady() {
 			helpers.LogWarn("Error: " + err.Error())
 		}
 
-		time.Sleep(100 * time.Millisecond)
+		time.Sleep(2000 * time.Millisecond)
 	}
 }
