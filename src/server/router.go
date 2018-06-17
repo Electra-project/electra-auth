@@ -18,6 +18,9 @@ func Router() *gin.Engine {
 			})
 		})
 
+		status := new(controllers.StatusController)
+		v1.GET("/status", status.Get)
+
 		userGroup := v1.Group("user")
 		{
 			user := new(controllers.UserController)
