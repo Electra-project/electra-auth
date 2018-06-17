@@ -40,6 +40,12 @@ func startDaemon() {
 		binaryFilePath = "./bin/electrad-linux-x64"
 	}
 
+	helpers.LogInfo("Checking Electra daemon binary...")
+	if _, err := os.Stat(binaryFilePath); err != nil {
+		helpers.LogInfo("Downloading Electra daemon binary...")
+		helpers.DownloadBinary()
+	}
+
 	if runtime.GOOS != "windows" {
 		helpers.LogInfo("Changing binary rights...")
 		cmd = exec.Command("chmod", "755", binaryFilePath)
@@ -49,12 +55,6 @@ func startDaemon() {
 		if err := cmd.Run(); err != nil {
 			helpers.LogErr("Error: " + err.Error())
 		}
-	}
-
-	helpers.LogInfo("Checking Electra daemon binary...")
-	if _, err := os.Stat(binaryFilePath); err != nil {
-		helpers.LogInfo("Downloading Electra daemon binary...")
-		helpers.DownloadBinary()
 	}
 
 	helpers.LogInfo("Starting Electra daemon...")
