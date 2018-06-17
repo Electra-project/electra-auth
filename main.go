@@ -30,12 +30,25 @@ func main() {
 
 func startDaemon() {
 	var binaryFilePath string
+	var cmd *exec.Cmd
+
 	if runtime.GOOS == "windows" {
 		binaryFilePath = "./bin/electrad-win32-x64.exe"
 	} else if runtime.GOOS == "darwin" {
 		binaryFilePath = "./bin/electrad-darwin-x64"
 	} else {
 		binaryFilePath = "./bin/electrad-linux-x64"
+	}
+
+	if runtime.GOOS != "windows" {
+		helpers.LogInfo("Changing binary rights...")
+		cmd = exec.Command("chmod", "755", binaryFilePath)
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		if err := cmd.Run(); err != nil {
+			helpers.LogErr("Error: " + err.Error())
+		}
 	}
 
 	helpers.LogInfo("Checking Electra daemon binary...")
@@ -45,7 +58,6 @@ func startDaemon() {
 	}
 
 	helpers.LogInfo("Starting Electra daemon...")
-	var cmd *exec.Cmd
 	cmd = exec.Command(binaryFilePath, "--rpcuser=user", "--rpcpassword=pass")
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
