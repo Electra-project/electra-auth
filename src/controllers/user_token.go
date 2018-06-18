@@ -1,6 +1,9 @@
 package controllers
 
 import (
+	"net/http"
+
+	"github.com/Electra-project/electra-auth/src/libs/fail"
 	"github.com/gin-gonic/gin"
 )
 
@@ -12,21 +15,41 @@ func (u UserTokenController) Get(c *gin.Context) {
 	purseHash := c.Param("purseHash")
 
 	if !isPurseHashValid(purseHash) {
-		c.JSON(400, gin.H{"message": "Invalid Purse Account address hash."})
-		c.Abort()
+		fail.AnswerCustom(c, fail.WrongPropertyValue, "purseHash")
 
 		return
 	}
 
-	user, err := userTokenModel.GetByPurseHash(c.Param("purseHash"))
+	userToken, err := userTokenModel.GetByPurseHash(c.Param("purseHash"))
 	if err != nil {
-		c.JSON(500, gin.H{"message": "Internal Server Error."})
-		c.Abort()
+		fail.Answer(c, err, "user token")
 
 		return
 	}
 
-	c.JSON(200, gin.H{"user": user})
+	c.JSON(http.StatusOK, gin.H{"data": userToken})
+
+	return
+}
+
+// Post a user token challenge from a Purse Account address hash.
+func (u UserTokenController) Post(c *gin.Context) {
+	purseHash := c.Param("purseHash")
+
+	if !isPurseHashValid(purseHash) {
+		fail.AnswerCustom(c, fail.WrongPropertyValue, "purseHash")
+
+		return
+	}
+
+	userToken, err := userTokenModel.Insert(c.Param("purseHash"))
+	if err != nil {
+		fail.Answer(c, err, "user token")
+
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{"data": userToken})
 
 	return
 }
