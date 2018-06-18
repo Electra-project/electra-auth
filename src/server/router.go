@@ -25,6 +25,7 @@ func Router() *gin.Engine {
 		{
 			user := new(controllers.UserController)
 			userGroup.GET("/:purseHash", user.Get)
+			userGroup.POST("/:purseHash", user.Post)
 
 			userToken := new(controllers.UserTokenController)
 			userGroup.GET("/:purseHash/token", userToken.Get)
