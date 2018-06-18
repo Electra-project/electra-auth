@@ -1,7 +1,6 @@
 package models
 
 import (
-	"log"
 	"time"
 
 	"github.com/Electra-project/electra-auth/src/database"
@@ -18,35 +17,28 @@ type UserToken struct {
 	UpdatedAt time.Time `json:"-"`
 }
 
-// GetByPurseHash get or generate a user token from the database by their Purse
-// Account address hash.
+// GetByPurseHash finds a user token in the database
+// by its Purse Account address hash.
 func (h UserToken) GetByPurseHash(purseHash string) (*UserToken, error) {
 	db := database.Get()
 	collection := db.C("users-tokens")
 
-	count, err := collection.Find(bson.M{"purseHash": purseHash}).Count()
+	var userToken *UserToken
+	err := collection.Find(bson.M{"purseHash": purseHash}).One(&userToken)
 	if err != nil {
-		log.Println(err)
-
 		return nil, err
 	}
 
-	if count == 1 {
-		var userToken *UserToken
-		err := collection.Find(bson.M{"purseHash": purseHash}).One(&userToken)
-		if err != nil {
-			log.Println(err)
+	return userToken, nil
+}
 
-			return nil, err
-		}
-
-		return userToken, nil
-	}
+// Insert generates and creates a new user token in the database.
+func (h UserToken) Insert(purseHash string) (*UserToken, error) {
+	db := database.Get()
+	collection := db.C("users-tokens")
 
 	challenge, err := generateMnemonic()
 	if err != nil {
-		log.Println(err)
-
 		return nil, err
 	}
 
@@ -57,16 +49,12 @@ func (h UserToken) GetByPurseHash(purseHash string) (*UserToken, error) {
 		"updatedAt": time.Now(),
 	})
 	if err != nil {
-		log.Println(err)
-
 		return nil, err
 	}
 
 	var userToken *UserToken
 	err = collection.Find(bson.M{"purseHash": purseHash}).One(&userToken)
 	if err != nil {
-		log.Println(err)
-
 		return nil, err
 	}
 
@@ -76,15 +64,11 @@ func (h UserToken) GetByPurseHash(purseHash string) (*UserToken, error) {
 func generateMnemonic() (string, error) {
 	entropy, err := mnemonic.NewEntropy(256)
 	if err != nil {
-		log.Println(err)
-
 		return "", err
 	}
 
 	mnemonic, err := mnemonic.NewMnemonic(entropy)
 	if err != nil {
-		log.Println(err)
-
 		return "", err
 	}
 
