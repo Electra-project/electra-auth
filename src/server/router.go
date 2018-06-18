@@ -19,21 +19,21 @@ func Router() *gin.Engine {
 			})
 		})
 
-		status := new(controllers.StatusController)
-		v1.GET("/status", status.Get)
+		statusController := new(controllers.StatusController)
+		v1.GET("/status", statusController.Get)
 
 		userGroup := v1.Group("user")
 		{
-			userToken := new(controllers.UserTokenController)
-			userGroup.GET("/:purseHash/token", userToken.Get)
-			userGroup.POST("/:purseHash/token", userToken.Post)
+			userTokenController := new(controllers.UserTokenController)
+			userGroup.GET("/:purseHash/token", userTokenController.Get)
+			userGroup.POST("/:purseHash/token", userTokenController.Post)
 		}
 
-		userGroup.Use(middlewares.IsUser())
+		v1.Use(middlewares.IsUser())
 		{
-			user := new(controllers.UserController)
-			userGroup.GET("/:purseHash", user.Get)
-			userGroup.POST("/:purseHash", user.Post)
+			userController := new(controllers.UserController)
+			v1.GET("/user", userController.Get)
+			v1.POST("/user", userController.Post)
 		}
 	}
 
