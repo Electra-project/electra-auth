@@ -1,14 +1,11 @@
 package controllers
 
 import (
-	"github.com/Electra-project/electra-auth/src/models"
 	"github.com/gin-gonic/gin"
 )
 
 // UserTokenController class.
 type UserTokenController struct{}
-
-var userTokenModel = new(models.UserToken)
 
 // Get a user token challenge from a Purse Account address hash.
 func (u UserTokenController) Get(c *gin.Context) {
