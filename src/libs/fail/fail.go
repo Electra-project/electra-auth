@@ -28,6 +28,12 @@ func Answer(c *gin.Context, err error, entityLabel string) {
 
 	switch true {
 
+	case errMessage == "not found":
+		c.AbortWithStatusJSON(
+			http.StatusNotFound,
+			gin.H{"message": strings.Title(entityLabel) + " not found."},
+		)
+
 	case strings.Contains(errMessage, "invalid character"):
 		c.AbortWithStatusJSON(
 			http.StatusUnprocessableEntity,
@@ -72,7 +78,7 @@ func AnswerCustom(c *gin.Context, errorIndex uint8, target string) {
 
 	case NotFound:
 		c.AbortWithStatusJSON(
-			http.StatusUnprocessableEntity,
+			http.StatusNotFound,
 			gin.H{"message": strings.Title(target) + " not found."},
 		)
 
