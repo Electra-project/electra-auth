@@ -26,6 +26,12 @@ func Answer(c *gin.Context, err error, entityLabel string) {
 
 	switch true {
 
+	case strings.Contains(errMessage, "invalid character"):
+		c.AbortWithStatusJSON(
+			http.StatusUnprocessableEntity,
+			gin.H{"message": "Malformed body JSON."},
+		)
+
 	case strings.Contains(errMessage, "cannot unmarshal"):
 		c.AbortWithStatusJSON(
 			http.StatusUnprocessableEntity,
