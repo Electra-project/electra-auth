@@ -20,16 +20,22 @@ const (
 )
 
 // Answer sends a JSON response error.
-func Answer(c *gin.Context, err error) {
+func Answer(c *gin.Context, err error, entityLabel string) {
 	errMessage := err.Error()
 	helpers.LogErr(errMessage)
 
 	switch true {
 
-	case strings.Contains(errMessage, "json: cannot unmarshal"):
+	case strings.Contains(errMessage, "cannot unmarshal"):
 		c.AbortWithStatusJSON(
 			http.StatusUnprocessableEntity,
 			gin.H{"message": "Wrong body properties types."},
+		)
+
+	case strings.Contains(errMessage, "duplicate key error"):
+		c.AbortWithStatusJSON(
+			http.StatusConflict,
+			gin.H{"message": "This " + entityLabel + " already exists."},
 		)
 
 	default:
@@ -59,7 +65,7 @@ func AnswerCustom(c *gin.Context, errorIndex uint8, target string) {
 	case NotFound:
 		c.AbortWithStatusJSON(
 			http.StatusUnprocessableEntity,
-			gin.H{"message": target + " not found."},
+			gin.H{"message": strings.Title(target) + " not found."},
 		)
 
 	case WrongPropertyValue:
