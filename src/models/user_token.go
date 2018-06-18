@@ -10,16 +10,16 @@ import (
 
 // UserToken model.
 type UserToken struct {
-	ID        string    `bson:"_id" json:"-"`
-	Challenge string    `json:"challenge"`
-	PurseHash string    `bson:"purseHash" json:"purseHash"`
-	CreatedAt time.Time `json:"-"`
-	UpdatedAt time.Time `json:"-"`
+	ID        bson.ObjectId `bson:"_id" json:"-"`
+	Challenge string        `bson:"challenge" json:"challenge"`
+	PurseHash string        `bson:"purseHash" json:"purseHash"`
+	CreatedAt time.Time     `bson:"createdAt" json:"createdAt"`
+	UpdatedAt time.Time     `bson:"updatedAt" json:"updatedAt"`
 }
 
 // GetByPurseHash finds a user token in the database
 // by its Purse Account address hash.
-func (h UserToken) GetByPurseHash(purseHash string) (*UserToken, error) {
+func (u UserToken) GetByPurseHash(purseHash string) (*UserToken, error) {
 	db := database.Get()
 	collection := db.C("users-tokens")
 
@@ -33,7 +33,7 @@ func (h UserToken) GetByPurseHash(purseHash string) (*UserToken, error) {
 }
 
 // Insert generates and creates a new user token in the database.
-func (h UserToken) Insert(purseHash string) (*UserToken, error) {
+func (u UserToken) Insert(purseHash string) (*UserToken, error) {
 	db := database.Get()
 	collection := db.C("users-tokens")
 
@@ -52,13 +52,7 @@ func (h UserToken) Insert(purseHash string) (*UserToken, error) {
 		return nil, err
 	}
 
-	var userToken *UserToken
-	err = collection.Find(bson.M{"purseHash": purseHash}).One(&userToken)
-	if err != nil {
-		return nil, err
-	}
-
-	return userToken, nil
+	return u.GetByPurseHash(purseHash)
 }
 
 func generateMnemonic() (string, error) {
