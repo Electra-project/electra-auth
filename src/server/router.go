@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/Electra-project/electra-auth/src/controllers"
+	"github.com/Electra-project/electra-auth/src/middlewares"
 	"github.com/gin-gonic/gin"
 )
 
@@ -23,13 +24,16 @@ func Router() *gin.Engine {
 
 		userGroup := v1.Group("user")
 		{
-			user := new(controllers.UserController)
-			userGroup.GET("/:purseHash", user.Get)
-			userGroup.POST("/:purseHash", user.Post)
-
 			userToken := new(controllers.UserTokenController)
 			userGroup.GET("/:purseHash/token", userToken.Get)
 			userGroup.POST("/:purseHash/token", userToken.Post)
+		}
+
+		userGroup.Use(middlewares.IsUser())
+		{
+			user := new(controllers.UserController)
+			userGroup.GET("/:purseHash", user.Get)
+			userGroup.POST("/:purseHash", user.Post)
 		}
 	}
 
