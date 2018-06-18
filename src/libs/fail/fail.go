@@ -15,6 +15,8 @@ const (
 	MissingProperty
 	// NotFound error represents an unfound entity in the database.
 	NotFound
+	// Unauthorized error represents a wrong authentication header.
+	Unauthorized
 	// WrongPropertyValue error represents an unexpected property value.
 	WrongPropertyValue
 )
@@ -72,6 +74,12 @@ func AnswerCustom(c *gin.Context, errorIndex uint8, target string) {
 		c.AbortWithStatusJSON(
 			http.StatusUnprocessableEntity,
 			gin.H{"message": strings.Title(target) + " not found."},
+		)
+
+	case Unauthorized:
+		c.AbortWithStatusJSON(
+			http.StatusUnauthorized,
+			gin.H{"message": "Non-provided or wrong credentials."},
 		)
 
 	case WrongPropertyValue:
