@@ -10,7 +10,7 @@ type UserTokenController struct{}
 
 var userTokenModel = new(models.UserToken)
 
-// Get a user token chanllenge from a Purse Account address hash.
+// Get a user token challenge from a Purse Account address hash.
 func (u UserTokenController) Get(c *gin.Context) {
 	purseHash := c.Param("purseHash")
 
