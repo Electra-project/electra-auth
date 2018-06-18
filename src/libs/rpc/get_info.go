@@ -26,15 +26,18 @@ type GetInfoResponse struct {
 		MinInput      float64 `json:"mininput"`
 		UnlockedUntil int64   `json:"unlocked_until"`
 		Errors        string  `json:"errors"`
-	} `json:"result"`
-	Error string `json:"error"`
-	ID    string `json:"id"`
+	} `json:"result,omitempty"`
+	Error struct {
+		Code    int64  `json:"code"`
+		Message string `json:"message"`
+	} `json:"error,omitempty"`
+	ID string `json:"id,omitempty"`
 }
 
 // GetInfo gets the daemon node info.
 func GetInfo() (*GetInfoResponse, error) {
 	var info *GetInfoResponse
-	err := query("getinfo", &info)
+	err := query("getinfo", nil, &info)
 
 	return info, err
 }
