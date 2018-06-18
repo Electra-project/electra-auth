@@ -15,6 +15,8 @@ const (
 	MissingProperty
 	// NotFound error represents an unfound entity in the database.
 	NotFound
+	// WrongPropertyValue error represents an unexpected property value.
+	WrongPropertyValue
 )
 
 // Answer sends a JSON response error.
@@ -58,6 +60,12 @@ func AnswerCustom(c *gin.Context, errorIndex uint8, target string) {
 		c.AbortWithStatusJSON(
 			http.StatusUnprocessableEntity,
 			gin.H{"message": target + " not found."},
+		)
+
+	case WrongPropertyValue:
+		c.AbortWithStatusJSON(
+			http.StatusUnprocessableEntity,
+			gin.H{"message": "Wrong body property value for: " + target + "."},
 		)
 
 	default:
