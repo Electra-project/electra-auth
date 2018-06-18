@@ -34,14 +34,6 @@ func (u UserController) Get(c *gin.Context) {
 func (u UserController) Post(c *gin.Context) {
 	purseHash := getPurseHash(c)
 
-	var reqBody *userPostBody
-	err := c.BindJSON(&reqBody)
-	if err != nil {
-		fail.Answer(c, err, "user")
-
-		return
-	}
-
 	user, err := userModel.Insert(purseHash)
 	if err != nil {
 		fail.Answer(c, err, "user")
