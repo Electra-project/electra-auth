@@ -1,37 +1,53 @@
 package controllers
 
 import (
-	"github.com/Electra-project/electra-auth/src/models"
+	"net/http"
+
+	"github.com/Electra-project/electra-auth/src/libs/fail"
 	"github.com/gin-gonic/gin"
 )
 
 // UserController describes a user controller.
 type UserController struct{}
 
-var userModel = new(models.User)
+type userPostBody struct {
+	Signature string `json:"signature"`
+}
 
-// Get a user public data.
+// Get retrieves the authenticated user info.
 func (u UserController) Get(c *gin.Context) {
-	if c.Param("purseHash") != "" {
-		user, err := userModel.GetByPurseHash(c.Param("purseHash"))
-		if err != nil {
-			if err.Error() == "not found" {
-				c.JSON(404, gin.H{"message": "User not found."})
-			} else {
-				c.JSON(500, gin.H{"message": "Internal Server Error."})
-			}
-			c.Abort()
+	purseHash := getPurseHash(c)
 
-			return
-		}
-
-		c.JSON(200, gin.H{"user": user})
+	user, err := userModel.GetByPurseHash(purseHash)
+	if err != nil {
+		fail.Answer(c, err, "user")
 
 		return
 	}
 
-	c.JSON(400, gin.H{"message": "Bad Request."})
-	c.Abort()
+	c.JSON(http.StatusOK, gin.H{"data": user})
 
 	return
+}
+
+// Post creates a new database entry for the authenticated user.
+func (u UserController) Post(c *gin.Context) {
+	purseHash := getPurseHash(c)
+
+	var reqBody *userPostBody
+	err := c.BindJSON(&reqBody)
+	if err != nil {
+		fail.Answer(c, err, "user")
+
+		return
+	}
+
+	user, err := userModel.Insert(purseHash)
+	if err != nil {
+		fail.Answer(c, err, "user")
+
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{"data": user})
 }
