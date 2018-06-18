@@ -29,6 +29,7 @@ func Router() *gin.Engine {
 
 			userToken := new(controllers.UserTokenController)
 			userGroup.GET("/:purseHash/token", userToken.Get)
+			userGroup.POST("/:purseHash/token", userToken.Post)
 		}
 	}
 
