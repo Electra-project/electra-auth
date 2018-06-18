@@ -10,17 +10,18 @@ import (
 
 // User model.
 type User struct {
-	ID               string   `bson:"_id"`
-	PurseHash        string   `json:"purseHash"`
-	PursePrivateKey  string   ``
-	TwitterUsername  string   `json:"twitterUsername"`
-	TwitterCheckedAt int64    ``
-	BootstrapNodes   []string `json:"bootstrapNodes"`
-	CreatedAt        int64    `json:"createdAt"`
-	UpdatedAt        int64    `json:"updatedAt"`
+	ID               bson.ObjectId   `bson:"_id" json:"-"`
+	PurseHash        string          `bson:"purseHash" json:"purseHash"`
+	PursePrivateKey  string          `bson:"pursePrivateKey" json:"-"`
+	TwitterUsername  string          `bson:"twitterUsername" json:"twitterUsername"`
+	TwitterCheckedAt time.Time       `bson:"twitterCheckedAt" json:"twitterCheckedAt"`
+	BootstrapNodes   []bson.ObjectId `bson:"bootstrapNodes" json:"-"`
+	CreatedAt        time.Time       `bson:"createdAt" json:"createdAt"`
+	UpdatedAt        time.Time       `bson:"updatedAt" json:"updatedAt"`
 }
 
-// GetByPurseHash gets a user from the database by their Purse Account address hash.
+// GetByPurseHash gets a user from the database
+// by their Purse Account address hash.
 func (u User) GetByPurseHash(purseHash string) (*User, error) {
 	db := database.Get()
 	collection := db.C("users")
@@ -42,23 +43,14 @@ func (u User) Insert(purseHash string) (*User, error) {
 	collection := db.C("users")
 
 	err := collection.Insert(bson.M{
-		"purseHash":        purseHash,
-		"PursePrivateKey":  nil,
-		"twitterUsername":  nil,
-		"twitterCheckedAt": nil,
-		"bootstrapNodes":   [0]string{},
-		"createdAt":        time.Now(),
-		"updatedAt":        time.Now(),
+		"purseHash": purseHash,
+		"createdAt": time.Now(),
+		"updatedAt": time.Now(),
 	})
 	if err != nil {
+		println(err)
 		return nil, err
 	}
 
-	var user *User
-	err = collection.Find(bson.M{"purseHash": purseHash}).One(&user)
-	if err != nil {
-		return nil, err
-	}
-
-	return user, nil
+	return u.GetByPurseHash(purseHash)
 }
