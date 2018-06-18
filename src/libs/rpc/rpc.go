@@ -9,11 +9,20 @@ import (
 	"github.com/Electra-project/electra-auth/src/helpers"
 )
 
-func query(method string, response interface{}) error {
+func query(method string, params []string, response interface{}) error {
 	daemonURI := "http://127.0.0.1:5788"
 
-	reqData := bytes.NewBuffer([]byte(`{"jsonrpc":"2.0","method":"` + method + `"}`))
-	req, err := http.NewRequest("POST", daemonURI, reqData)
+	reqParams, err := json.Marshal(params)
+	if err != nil {
+		helpers.LogErr("Error: " + err.Error())
+
+		return err
+	}
+
+	reqData := `{"method":"` + method + `","params":` + string(reqParams) + `}`
+	// helpers.Log(reqData)
+	reqDataBuffer := bytes.NewBuffer([]byte(reqData))
+	req, err := http.NewRequest("POST", daemonURI, reqDataBuffer)
 	req.Header.Set("Content-Type", "application/json")
 	req.SetBasicAuth("user", "pass")
 
