@@ -9,6 +9,7 @@ import (
 // Router binds the routes to the controllers.
 func Router() *gin.Engine {
 	router := gin.Default()
+	router.Use(middlewares.Cors())
 
 	v1 := router.Group("v1")
 	{
