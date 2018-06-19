@@ -82,7 +82,7 @@ func (u User) Update(purseHash string, data UserEditable) (*User, error) {
 		bson.M{"purseHash": purseHash},
 		bson.M{"$set": bson.M{
 			"twitterUsername": data.TwitterUsername,
-			"isSynchronized":  true,
+			"isSynchronized":  data.IsSynchronized,
 			"updatedAt":       time.Now(),
 		}},
 	)
