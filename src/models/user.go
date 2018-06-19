@@ -14,10 +14,11 @@ type User struct {
 	ID               bson.ObjectId   `bson:"_id" json:"-"`
 	PurseHash        string          `bson:"purseHash" json:"purseHash"`
 	Token            string          `bson:"token" json:"token"`
+	HasAutoUpdate    string          `bson:"hasAutoUpdate" json:"hasAutoUpdate"`
+	IsSynchronized   bool            `bson:"isSynchronized" json:"isSynchronized"`
 	PursePrivateKey  string          `bson:"pursePrivateKey" json:"-"`
 	TwitterUsername  string          `bson:"twitterUsername" json:"twitterUsername"`
 	TwitterCheckedAt time.Time       `bson:"twitterCheckedAt" json:"twitterCheckedAt"`
-	IsSynchronized   bool            `bson:"isSynchronized" json:"isSynchronized"`
 	BootstrapNodes   []bson.ObjectId `bson:"bootstrapNodes" json:"-"`
 	CreatedAt        time.Time       `bson:"createdAt" json:"createdAt"`
 	UpdatedAt        time.Time       `bson:"updatedAt" json:"updatedAt"`
@@ -25,8 +26,9 @@ type User struct {
 
 // UserEditable model.
 type UserEditable struct {
-	TwitterUsername string `bson:"twitterUsername" json:"twitterUsername"`
+	HasAutoUpdate   string `bson:"hasAutoUpdate" json:"hasAutoUpdate"`
 	IsSynchronized  bool   `bson:"isSynchronized" json:"isSynchronized"`
+	TwitterUsername string `bson:"twitterUsername" json:"twitterUsername"`
 }
 
 const tokenLength uint8 = 196
@@ -61,8 +63,9 @@ func (u User) Insert(purseHash string) (*User, error) {
 	err = collection.Insert(bson.M{
 		"purseHash":       purseHash,
 		"token":           token,
-		"twitterUsername": "",
+		"hasAutoUpdate":   true,
 		"isSynchronized":  true,
+		"twitterUsername": "",
 		"createdAt":       time.Now(),
 		"updatedAt":       time.Now(),
 	})
@@ -81,8 +84,9 @@ func (u User) Update(purseHash string, data UserEditable) (*User, error) {
 	err := collection.Update(
 		bson.M{"purseHash": purseHash},
 		bson.M{"$set": bson.M{
-			"twitterUsername": data.TwitterUsername,
+			"hasAutoUpdate":   data.HasAutoUpdate,
 			"isSynchronized":  data.IsSynchronized,
+			"twitterUsername": data.TwitterUsername,
 			"updatedAt":       time.Now(),
 		}},
 	)
