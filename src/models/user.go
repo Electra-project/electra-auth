@@ -63,3 +63,22 @@ func (u User) Insert(purseHash string) (*User, error) {
 
 	return u.GetByPurseHash(purseHash)
 }
+
+// Update the data of an exising user in the database.
+func (u User) Update(purseHash string, twitterUsername string) (*User, error) {
+	db := database.Get()
+	collection := db.C("users")
+
+	err := collection.Update(
+		bson.M{"purseHash": purseHash},
+		bson.M{"$set": bson.M{
+			"twitterUsername": twitterUsername,
+			"updatedAt":       time.Now(),
+		}},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return u.GetByPurseHash(purseHash)
+}
