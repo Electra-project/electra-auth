@@ -3,6 +3,8 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/Electra-project/electra-auth/src/models"
+
 	"github.com/Electra-project/electra-auth/src/libs/fail"
 	"github.com/gin-gonic/gin"
 )
@@ -10,11 +12,7 @@ import (
 // UserController describes a user controller.
 type UserController struct{}
 
-type userPostBody struct {
-	Signature string `json:"signature"`
-}
-
-// Get retrieves the authenticated user info.
+// Get retrieves the authenticated user data.
 func (u UserController) Get(c *gin.Context) {
 	purseHash := getPurseHash(c)
 
@@ -42,4 +40,26 @@ func (u UserController) Post(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{"data": user})
+}
+
+// Put update the authenticated user data.
+func (u UserController) Put(c *gin.Context) {
+	purseHash := getPurseHash(c)
+
+	var data models.UserEditable
+	err := c.BindJSON(&data)
+	if err != nil {
+		fail.Answer(c, err, "user")
+
+		return
+	}
+
+	user, err := userModel.Update(purseHash, data)
+	if err != nil {
+		fail.Answer(c, err, "user")
+
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": user})
 }
