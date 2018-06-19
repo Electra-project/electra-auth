@@ -35,6 +35,7 @@ func Router() *gin.Engine {
 			userController := new(controllers.UserController)
 			v1.GET("/user", userController.Get)
 			v1.POST("/user", userController.Post)
+			v1.PUT("/user", userController.Put)
 		}
 	}
 
