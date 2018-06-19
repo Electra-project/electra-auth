@@ -14,7 +14,7 @@ type User struct {
 	ID               bson.ObjectId   `bson:"_id" json:"-"`
 	PurseHash        string          `bson:"purseHash" json:"purseHash"`
 	Token            string          `bson:"token" json:"token"`
-	HasAutoUpdate    string          `bson:"hasAutoUpdate" json:"hasAutoUpdate"`
+	HasAutoUpdate    bool            `bson:"hasAutoUpdate" json:"hasAutoUpdate"`
 	IsSynchronized   bool            `bson:"isSynchronized" json:"isSynchronized"`
 	PursePrivateKey  string          `bson:"pursePrivateKey" json:"-"`
 	TwitterUsername  string          `bson:"twitterUsername" json:"twitterUsername"`
@@ -26,7 +26,7 @@ type User struct {
 
 // UserEditable model.
 type UserEditable struct {
-	HasAutoUpdate   string `bson:"hasAutoUpdate" json:"hasAutoUpdate"`
+	HasAutoUpdate   bool   `bson:"hasAutoUpdate" json:"hasAutoUpdate"`
 	IsSynchronized  bool   `bson:"isSynchronized" json:"isSynchronized"`
 	TwitterUsername string `bson:"twitterUsername" json:"twitterUsername"`
 }
