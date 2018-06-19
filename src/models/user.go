@@ -23,6 +23,12 @@ type User struct {
 	UpdatedAt        time.Time       `bson:"updatedAt" json:"updatedAt"`
 }
 
+// UserEditable model.
+type UserEditable struct {
+	TwitterUsername string `bson:"twitterUsername" json:"twitterUsername"`
+	IsSynchronized  bool   `bson:"isSynchronized" json:"isSynchronized"`
+}
+
 const tokenLength uint8 = 196
 
 // GetByPurseHash gets a user from the database
@@ -53,11 +59,12 @@ func (u User) Insert(purseHash string) (*User, error) {
 	collection := db.C("users")
 
 	err = collection.Insert(bson.M{
-		"purseHash":      purseHash,
-		"token":          token,
-		"isSynchronized": true,
-		"createdAt":      time.Now(),
-		"updatedAt":      time.Now(),
+		"purseHash":       purseHash,
+		"token":           token,
+		"twitterUsername": "",
+		"isSynchronized":  true,
+		"createdAt":       time.Now(),
+		"updatedAt":       time.Now(),
 	})
 	if err != nil {
 		return nil, err
@@ -67,14 +74,15 @@ func (u User) Insert(purseHash string) (*User, error) {
 }
 
 // Update the data of an exising user in the database.
-func (u User) Update(purseHash string, twitterUsername string) (*User, error) {
+func (u User) Update(purseHash string, data UserEditable) (*User, error) {
 	db := database.Get()
 	collection := db.C("users")
 
 	err := collection.Update(
 		bson.M{"purseHash": purseHash},
 		bson.M{"$set": bson.M{
-			"twitterUsername": twitterUsername,
+			"twitterUsername": data.TwitterUsername,
+			"isSynchronized":  true,
 			"updatedAt":       time.Now(),
 		}},
 	)
