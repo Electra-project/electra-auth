@@ -17,6 +17,7 @@ type User struct {
 	PursePrivateKey  string          `bson:"pursePrivateKey" json:"-"`
 	TwitterUsername  string          `bson:"twitterUsername" json:"twitterUsername"`
 	TwitterCheckedAt time.Time       `bson:"twitterCheckedAt" json:"twitterCheckedAt"`
+	IsSynchronized   bool            `bson:"isSynchronized" json:"isSynchronized"`
 	BootstrapNodes   []bson.ObjectId `bson:"bootstrapNodes" json:"-"`
 	CreatedAt        time.Time       `bson:"createdAt" json:"createdAt"`
 	UpdatedAt        time.Time       `bson:"updatedAt" json:"updatedAt"`
@@ -52,10 +53,11 @@ func (u User) Insert(purseHash string) (*User, error) {
 	collection := db.C("users")
 
 	err = collection.Insert(bson.M{
-		"purseHash": purseHash,
-		"token":     token,
-		"createdAt": time.Now(),
-		"updatedAt": time.Now(),
+		"purseHash":      purseHash,
+		"token":          token,
+		"isSynchronized": true,
+		"createdAt":      time.Now(),
+		"updatedAt":      time.Now(),
 	})
 	if err != nil {
 		return nil, err
