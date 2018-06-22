@@ -18,6 +18,7 @@ func (s StatusController) Get(c *gin.Context) {
 		return
 	}
 
+	c.Header("X-Version", "1.0")
 	c.JSON(200, status)
 
 	return
