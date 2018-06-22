@@ -23,6 +23,7 @@ func (u UserController) Get(c *gin.Context) {
 		return
 	}
 
+	c.Header("X-Version", "1.0")
 	c.JSON(http.StatusOK, gin.H{"data": user})
 
 	return
@@ -39,6 +40,7 @@ func (u UserController) Post(c *gin.Context) {
 		return
 	}
 
+	c.Header("X-Version", "1.0")
 	c.JSON(http.StatusCreated, gin.H{"data": user})
 }
 
@@ -61,5 +63,6 @@ func (u UserController) Put(c *gin.Context) {
 		return
 	}
 
+	c.Header("X-Version", "1.0")
 	c.JSON(http.StatusOK, gin.H{"data": user})
 }
