@@ -27,6 +27,7 @@ func (u UserTokenController) Get(c *gin.Context) {
 		return
 	}
 
+	c.Header("X-Version", "1.0")
 	c.JSON(http.StatusOK, gin.H{"data": userToken})
 
 	return
@@ -49,6 +50,7 @@ func (u UserTokenController) Post(c *gin.Context) {
 		return
 	}
 
+	c.Header("X-Version", "1.0")
 	c.JSON(http.StatusCreated, gin.H{"data": userToken})
 
 	return
