@@ -7,8 +7,9 @@ else
 endif
 
 install:
-	godep restore
 	go get -u golang.org/x/lint/golint
+	go get -u github.com/tools/godep
+	godep restore
 
 lint:
 	golint ./main.go
