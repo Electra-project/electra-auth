@@ -3,5 +3,8 @@ language: go
 go:
   - 1.10.x
 
-before_install:
-  - go get github.com/tools/godep
+install:
+  - make install
+
+script:
+  - make test
