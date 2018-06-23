@@ -8,7 +8,7 @@ Electra API public web-services.
 
 ## Documentation
 
-Please check the [API documentation](https://electra-api-doc.herokuapp.com) to know how to use our API.
+Please check the [API documentation](https://electra-api-doc.herokuapp.com) to know how to use our public web-services.
 
 ## Contribute
 
