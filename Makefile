@@ -7,8 +7,9 @@ else
 endif
 
 install:
-	go get -u golang.org/x/lint/golint
 	go get -u github.com/tools/godep
+	go get -u github.com/stretchr/testify
+	go get -u golang.org/x/lint/golint
 	godep restore
 
 lint:
